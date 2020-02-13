@@ -1,4 +1,4 @@
-service: notes-app-api
+service: mlog-app-api
 
 # Create an optimized package for our functions
 package:
@@ -7,19 +7,18 @@ package:
 plugins:
   - serverless-bundle # Package our functions with Webpack
   - serverless-offline
-  - serverless-dotenv-plugin # Load .env as environment variables
+ # - serverless-dotenv-plugin # Load .env as environment variables
+
+custum:
+  webpack:
+    webpackCongig: ./webpack.config.js
+    includeModules: true
 
 provider:
   name: aws
   runtime: nodejs10.x
   stage: prod
-  region: us-east-1
-
-  # These environment variables are made available to our functions
-  # under process.env.
-  environment:
-    tableName: notes
-    stripeSecretKey: ${env:STRIPE_SECRET_KEY}
+  region: ap-northeast-2
 
   # 'iamRoleStatements' defines the permission policy for the Lambda function.
   # In this case Lambda functions are granted with permissions to access DynamoDB.
@@ -33,15 +32,14 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:us-east-1:*:*"
+      Resource: "arn:aws:dynamodb:ap-northeast-2:*:*"
 
 functions:
-  # Defines an HTTP API endpoint that calls the main function in create.js
-  # - path: url path is /notes
-  # - method: POST request
-  # - cors: enabled CORS (Cross-Origin Resource Sharing) for browser cross
-  #     domain api call
-  # - authorizer: authenticate using the AWS IAM role
+  # create.js의 메인 함수를 호출하는 HTTP API 엔드포인트를 정의
+  # - path: url 경로는 /notes
+  # - method: POST 요청
+  # - cors: 브라우저의 크로스 도메인 API 호출을 위해 CORS (Cross-Origin Resource Sharing) 활성화 
+  # - authorizer: AWS IAM 역할을 통한 인증 
   create:
     handler: create.main
     events:
@@ -49,69 +47,49 @@ functions:
           path: notes
           method: post
           cors: true
-          authorizer: aws_iam
-
+          authorizer: moon
+  
   get:
-    # Defines an HTTP API endpoint that calls the main function in get.js
-    # - path: url path is /notes/{id}
-    # - method: GET request
     handler: get.main
     events:
       - http:
           path: notes/{id}
           method: get
           cors: true
-          authorizer: aws_iam
+          authorizer: moon
 
   list:
-    # Defines an HTTP API endpoint that calls the main function in list.js
-    # - path: url path is /notes
-    # - method: GET request
     handler: list.main
     events:
       - http:
           path: notes
           method: get
-          cors: true
-          authorizer: aws_iam
-
+          cors: ture
+          authorizer: moon
+      
   update:
-    # Defines an HTTP API endpoint that calls the main function in update.js
-    # - path: url path is /notes/{id}
-    # - method: PUT request
     handler: update.main
     events:
       - http:
           path: notes/{id}
           method: put
           cors: true
-          authorizer: aws_iam
+          authorizer: moon
 
   delete:
-    # Defines an HTTP API endpoint that calls the main function in delete.js
-    # - path: url path is /notes/{id}
-    # - method: DELETE request
     handler: delete.main
     events:
       - http:
           path: notes/{id}
           method: delete
           cors: true
-          authorizer: aws_iam
+          authorizer: moon
 
   billing:
-    # Defines an HTTP API endpoint that calls the main function in billing.js
-    # - path: url path is /billing
-    # - method: POST request
     handler: billing.main
     events:
       - http:
           path: billing
           method: post
           cors: true
-          authorizer: aws_iam
-
-# Create our resources with separate CloudFormation templates
-resources:
-  # API Gateway Errors
-  - ${file(resources/api-gateway-errors.yml)}
+          authorizer: moon

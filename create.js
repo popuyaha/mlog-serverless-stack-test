@@ -2,23 +2,24 @@ import uuid from "uuid";
 import * as dynamoDbLib from "./libs/dynamodb-lib";
 import { success, failure } from "./libs/response-lib";
 
-export async function main(event, context) {
+export async function main(event, context, callback){
   const data = JSON.parse(event.body);
   const params = {
-    TableName: process.env.tableName,
+    TableName: "mlog-notes",
     Item: {
       userId: event.requestContext.identity.cognitoIdentityId,
       noteId: uuid.v1(),
       content: data.content,
-      attachment: data.attachment,
-      createdAt: Date.now()
+      atatachment: data.atatachment,
+      createAt: Date.now()
     }
   };
 
-  try {
+  try{
     await dynamoDbLib.call("put", params);
     return success(params.Item);
-  } catch (e) {
-    return failure({ status: false });
+  } catch(e) {
+    console.log(e);
+    return failure({ status: false});
   }
 }
