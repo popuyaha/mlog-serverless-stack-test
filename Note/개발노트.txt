@@ -1,0 +1,171 @@
+
+리눅스 실행환경 
+메모리 : 128~3008MB, 64MB 증분
+임시 디스크 용량 : 512MB
+최대 실행 지속시간 : 900초
+압축 패키지 크기 : 50MB
+비압축 패키지 크기 : 250MB
+
+cognito - 사용자 풀 관리 서비스(인증 구현 서비스)
+cloudfront - 정,동적 웹 콘텐츠를 사용자에게 더 빨리 배포하게 해주는 웹 서비스
+Amazon S3(Simple Storage Service) - 확장성과 데이터 가용성 및 보안과 성능을 제공하는 객체 스토리지 서비스
+route 53 - 가용성과 확장성이 우수한 DNS(도메인 이름 시스템) 웹 서비스
+certificate manager - AWS 서비스 및 내부 리소스에 사용할 공인, 사설 SSL/TLS(Secure socket layer/ 전송계층 보안) 인증서를 손쉽게 프로비저닝, 관리 배포할수 있도록 지원하는 서비스
+netlify - 정적 사이트를 쉽게 배포할 수 있는 서비스
+Node version - v10.13.0
+npm version - v6.4.1
+DB - DynamoDB
+
+AWS Lambda - Node.js (v10.15 & v8.10), Java 8, .NET Core(1.0.1 & 2.1), Go 1.x, Rucy 2.5, Rust
+각 기능들은 내부 컨테이너에 64비트 Amazon 리눅스 AMI(Amazon Machine Image)로 실행된다.
+
+1. AWS Account 생성
+
+2. Amazon IAM(Identity and Access Management) - AWS 리소스에 대한 액세스를 안전하게 제어할 수 있는 웹 서비스입니다. IAM을 사용하여 리소스를 사용하도록 인증(로그인) 및 권한 부여(권한 있음)된 대상을 제어함
+AWS IAM 카테고리 -> Users 항목 -> Add user 으로 들어가 세부 내역 작성. 정책 설정(AdministratorAccess) 후 유저 생성하면 접근 키 주소가 나온다.
+Secret access key - vuKLfHE5SCc0MUlYvNPQn+1YgIpKOz0uco1cnDcc
+access key - AKIAQQLWG6Y4B2K2GNPS
+
+IAM을 사용하여 유저간 권한,정책 설정을 수월하게 할 수 있다.
+
+ARN (Amazon Resource Name) - AWS 리소스를 고유하게 식별합니다. IAM 정책, Amazon Relational Database Service(Amazon RDS) 태그 및 API 호출과 같은 모든 AWS에서 리소스를 명료하게 지정해야 하는 경우 ARN이 필요
+
+3. AWS CLI 세팅- CLI엔 Python v2 2.6.5+  PYTHON v3 3.3+ 가 필요 
+python 설치후 pip도 설치 해야하는데 curl로 명령어 실행 후 설치가 필요 -> python을 설치하면 pip은 자동으로 설치됨. 대신 환경변수를 설정해줘야 경로가 잡힘
+제어판 -> 시스템 및 보안 -> 시스템 -> 고급 시스템 설정 -> 환경변수 -> Path 더블클릭 후 새로만들기 통해 경로 추가(pip.exe가 있는 곳을 잡아주면 됨)
+환경변수 설정 방법- https://m.blog.naver.com/lee95292/221205091279
+
+python 설치 후 경로를 잡고 git bash나 cmd 창에서 
+
+pip install awscli 명령어 수행.
+
+수행 후 aws configure 입력하면 키값 입력창이 뜨는데 위의 두개의 키값을 입력.
+
+
+4. DynamoDB 테이블 생성
+경로 - https://aws.amazon.com/dynamodb 
+DynamoDB는 완벽한 확장성으로 빠르고 예측 가능한 성능을 제공하는 완전히 관리되는 NoSQL 데이터베이스 이다.
+사이트 이동 후 테이블 생성. 테이블 명, 고유 키값 설정 후 테이블 생성 완료(이때 유휴 시 상태값 지정하는 화면이 있는데 이부분 중요)
+
+5. Amazon S3 Bucket 설정
+S3는 웹 서비스 인터페이스를 통해 스토리지 서비스를 제공한다. 이미지, 비디오, 파일 등을 포함한 모든 개체를 S3에 저장할 수 있다.
+
+버켓 생성하기 -> 버켓 이름,국가 설정 -> 기본항목 설정(건드리지않음) -> 버켓 생성 완료
+
+생성한 S3 버켓 명 = mlog-app-uploads
+
+이 후 CORS를 활성화 해야 한다.
+CORS(Cross-origin Resource Sharing)는 브라우저에서 실행 중인 스크립트에서 시작되는 cross-origin HTTP 요청을 제한하는 브라우저 보안 기능
+CORS 지원을 통해 Amazon S3로 다양한 기능의 클라이언트 측 웹 애플리케이션을 구축하고, Amazon S3 리소스에 대한 cross-origin 액세스를 선택적으로 허용할 수 있다.
+생성한 버켓을 선택하고 권한 탭에 CORS 설정창을 들어가 아래 항목을 입력한다.
+
+<CORSConfiguration>
+  <CORSRule>
+     <AllowedOrigin>*</AllowedOrigin>
+     <AllowedMethod>GET</AllowedMethod>
+     <AllowedMethod>PUT</AllowedMethod>
+     <AllowedMethod>POST</AllowedMethod>
+     <AllowedMethod>HEAD</AllowedMethod>
+     <AllowedMethod>DELETE</AllowedMethod>
+     <MaxAgeSeconds>3000</MaxAgeSeconds>
+     <AllowedHeader>*</AllowedHeader>
+  </CORSRule>
+</CORSConfiguration>
+
+6. Cognito User Pool 생성하기.
+Amazon Cognito User Pool을 사용하면 개발자가 웹 및 모바일 애플리케이션에 쉽게 로그인 및 로그인 기능을 추가할 수 있다. 
+사용자 디렉토리를 유지하는 사용자의 ID 제공자 역할을 한다. 또한 사용자 등록과 로그인뿐만 아니라 로그인한 사용자를 위한 ID 토큰을 프로비저닝할 수 있도록 지원한다.
+
+AWS의 cognito 항목 검색 후 사이트 이동.
+사용자 풀 생성 버튼 클릭 후 풀 이름 설정 후, 기본 값 검토 클릭, 필수, 선택 조건들을 선택 후 사용자 풀 생성.
+
+풀 ID = ap-northeast-2_AopDentQv
+풀 ARN = arn:aws:cognito-idp:ap-northeast-2:035144529464:userpool/ap-northeast-2_AopDentQv
+
+앱 클라이언트 추가 버튼 클릭 후 앱 클라이언트 생성.
+
+앱클라이언트 ID : 50rek42h3dnk3fk6roed2nol4p
+
+7. 사용자 만들기
+터미널에서 
+aws cognito-idp sign-up \
+  --region YOUR_COGNITO_REGION \
+  --client-id YOUR_COGNITO_APP_CLIENT_ID \
+  --username admin@example.com \
+  --password Passw0rd!
+를 실행.
+
+8. 서버리스 프레임워크 셋업
+전역으로 serverless 설치
+npm install serverless -g
+
+설치 후 serverless nodejs 스타터 설치 
+serverless install --url https://github.com/AnomalyInnovations/serverless-nodejs-starter --name mlog-app-api
+
+생성한 폴더로 이동 .
+폴더의 구성 파일중에 handler.js와 serverless.yml이 있어야 한다.
+handler.js 파일에는 AWS Lambda에 배포 될 서비스/기능의 실제 코드가 들어 있다.
+serverless.yml 파일에는 Serverless가 제공 할 AWS 서비스 구성 및 구성 방법이 포함되어 있다.
+
+기본적인 npm 설치를 해준다.
+npm install
+
+이후 백엔드 설계를 쉽게 하기 위해 aws-sdk를 추가로 설치해준다.
+AWS-SDK를 사용하면 Amazon S3, Amazon EC2, DynamoDB 및 Amazon SWF를 포함하는 AWS 서비스를 위한 JavaScript 객체가 제공되므로 복잡하게 코드를 작성하지 않아도 된다.
+https://aws.amazon.com/ko/sdk-for-node-js/
+라이브러리 및 설명서 참고
+
+npm install uuid --save 
+uuid도 추가로 설치해준다. 고유 ID를 생성해주는 서비스인데 dynamoDB의 데이터를 저장하는데에 쓰인다.
+
+npm install을 하다보면 취약점을 목록으로 띄워주는데 이건 npm v6이 나오면서 생긴 기능이며
+npm audit로 모듈의 취약점을 검사할 수 있다. 또한 npm audit fix로 취약점이 발견된 package를 자동으로 update 해준다.
+
+Github에 remote 설정후 프로젝트를 commit시켜 push한다.
+
+9. 노트 API 함수 생성
+create.js 파일 생성 후 코드 작성....
+
+API 엔드포인트도 serverless.yml파일을 수정해서 정의해준다.
+iamRoleStatements 섹션 수정으로 작업된 람다 함수를 DynamoDB에서 수행할 수 있게 된다.
+
+10. 테스트
+mocks 디렉토리를 생성 후 create-event.json파일 생성하고 코드를 작성한다.
+
+{
+    "statusCode": 200,
+    "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true
+    },
+    "body": "{\"userId\":\"USER-SUB-1234\",\"noteId\":\"76115ce0-4e24-11ea-b753-5794fb1a5ba5\",\"content\":\"hello world\",\"createAt\":1581572909486}"
+}
+
+11. 코드 리팩토링
+ 모든 api에 대해 빠르게 처리하기 위해 리팩토링을 한다.
+ 공통으로 사용하는 dynamoDB 연결 함수와 db 연결시 응답하는 부분을 libs 폴더에 js형태로 묶어 별도 관리한다.
+ 
+12. 노트 조회하는 함수 생성
+get.js 파일 생성 후 코드 작성. 위와 동일하게 엔드포인트도 serverless.yml파일을 수정해서 정의해준다.
+
+13. 노트 목록을 가져오는 api 함수 생성
+list.js 파일 생성 후 코드 작성. 위와 동일하게 엔드포인트도 serverless.yml파일을 수정해서 정의해준다.
+
+14. 새 노트 객체를 업데이트 할수있는 api 추가
+update.js 파일을 생성 후 코드 작성.
+
+15. 노트 객체를 삭제 할수있는 api 추가
+delete.js 파일을 생성 후 코드 작성.
+
+16. 청구 API를 생성하기 위해 stripe 사이트에 가입.
+생성후 개발자 항목 -> API keys 확인 publishable key와 secret key 저장
+Publishable key = pk_test_kkoaKGinDaUNPXZoE38eSdQU00bzzqxwdA
+Secret key = sk_test_tBOh8XnTOnkEqO8egLKyi9BP00WMZceWF7
+
+billing.js 생성 후 코드 입력, 비즈니스로직을 위한 billing-lib.js 파일 작성
+
+17. 자격 증명 풀 편집
+자격증명 풀 ID = ap-northeast-2:59cd5099-9876-42fd-98ca-2d74936ae374 
+
+
+
