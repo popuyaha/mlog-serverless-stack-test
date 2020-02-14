@@ -24,10 +24,6 @@ custom:
   # Fallback to default if it is not in prod.
   environment: ${file(env.yml):${self:custom.stage}, file(env.yml):default}
     
-environment: 
-    tableName: ${self:custom.tableName}
-    stripeSecretKey: ${self:custom.environment.stripeSecretKey}
-
 provider:
   name: aws
   runtime: nodejs10.x
@@ -47,6 +43,10 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:ap-northeast-2:*:*"
+  
+  environment: 
+    tableName: ${self:custom.tableName}
+    stripeSecretKey: ${self:custom.environment.stripeSecretKey}
 
 functions:
   # create.js의 메인 함수를 호출하는 HTTP API 엔드포인트를 정의
@@ -61,7 +61,7 @@ functions:
           path: notes
           method: post
           cors: true
-          authorizer: moon
+          authorizer: aws_iam
   
   get:
     handler: get.main
@@ -70,7 +70,7 @@ functions:
           path: notes/{id}
           method: get
           cors: true
-          authorizer: moon
+          authorizer: aws_iam
 
   list:
     handler: list.main
@@ -79,7 +79,7 @@ functions:
           path: notes
           method: get
           cors: ture
-          authorizer: moon
+          authorizer: aws_iam
       
   update:
     handler: update.main
@@ -88,7 +88,7 @@ functions:
           path: notes/{id}
           method: put
           cors: true
-          authorizer: moon
+          authorizer: aws_iam
 
   delete:
     handler: delete.main
@@ -97,7 +97,7 @@ functions:
           path: notes/{id}
           method: delete
           cors: true
-          authorizer: moon
+          authorizer: aws_iam
 
   billing:
     handler: billing.main
@@ -106,4 +106,7 @@ functions:
           path: billing
           method: post
           cors: true
-          authorizer: moon
+          authorizer: aws_iam
+
+resources:
+  - ${file(resources/api-gateway-errors.yml)}
