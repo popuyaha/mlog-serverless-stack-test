@@ -167,5 +167,38 @@ billing.js 생성 후 코드 입력, 비즈니스로직을 위한 billing-lib.js 파일 작성
 17. 자격 증명 풀 편집
 자격증명 풀 ID = ap-northeast-2:59cd5099-9876-42fd-98ca-2d74936ae374 
 
+18. 서버리스 배포
+
+명령어 실행 후 나온 텍스트를 저장해둔다.
+Serverless: Bundling with Webpack...
+Serverless: Packaging service...
+Serverless: Service files not changed. Skipping deployment...
+Service Information
+service: mlog-app-api
+stage: prod
+region: ap-northeast-2
+stack: mlog-app-api-prod
+resources: 43
+api keys:
+  None
+endpoints:
+  POST - https://p3auo1ehhg.execute-api.ap-northeast-2.amazonaws.com/prod/notes
+  GET - https://p3auo1ehhg.execute-api.ap-northeast-2.amazonaws.com/prod/notes/{id}
+  GET - https://p3auo1ehhg.execute-api.ap-northeast-2.amazonaws.com/prod/notes
+  PUT - https://p3auo1ehhg.execute-api.ap-northeast-2.amazonaws.com/prod/notes/{id}
+  DELETE - https://p3auo1ehhg.execute-api.ap-northeast-2.amazonaws.com/prod/notes/{id}
+  POST - https://p3auo1ehhg.execute-api.ap-northeast-2.amazonaws.com/prod/billing
+functions:
+  create: mlog-app-api-prod-create
+  get: mlog-app-api-prod-get
+  list: mlog-app-api-prod-list
+  update: mlog-app-api-prod-update
+  delete: mlog-app-api-prod-delete
+  billing: mlog-app-api-prod-billing
+layers:
+  None
+Serverless: Run the "serverless" command to setup monitoring, troubleshooting and testing.
 
 
+
+npx aws-api-gateway-cli-test --username='popuyaha@naver.com' --password='ansrudghks1!' --user-pool-id='ap-northeast-2_AopDentQv' --app-client-id='50rek42h3dnk3fk6roed2nol4p' --cognito-region='ap-northeast-2' --identity-pool-id='ap-northeast-2:59cd5099-9876-42fd-98ca-2d74936ae374' --invoke-url='https://p3auo1ehhg.execute-api.ap-northeast-2.amazonaws.com/prod' --api-gateway-region='ap-northeast-2' --path-template='notes' --method='POST' --body='{"content":"hello world","attahment":"hello.jpg"}'

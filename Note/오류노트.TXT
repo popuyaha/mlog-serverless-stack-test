@@ -68,3 +68,10 @@ Unsupported platform for fsevents@1.2.9: wanted 오류 발행
   serverless.yml의 function을 읽을수 없음
 - 해결 방법
   yml파일의 function을 알맞게 변경 시켜줌
+
+11. api 테스트중 {status: 403} 응답 오류
+
+- 오류 원인
+  경로를 잡지 못해서 생긴 오류
+- 해결 방법
+  Windows에서 Git Bash를 사용하는 경우 --path-template에서 선행 슬래시를 제거하는 반면 YOUR_API_GATEWAY_URL에는 후행 슬래시를 추가해야함. 

@@ -7,3 +7,8 @@
  - SERVERLESS npm 설치
  ㄴ  
 
+2020. 2. 14
+ - Api test완료
+ - vuejs 세팅
+ 
+
