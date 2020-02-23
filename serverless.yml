@@ -78,7 +78,7 @@ functions:
       - http:
           path: notes
           method: get
-          cors: ture
+          cors: true
           authorizer: aws_iam
       
   update:
@@ -105,6 +105,96 @@ functions:
       - http:
           path: billing
           method: post
+          cors: true
+          authorizer: aws_iam
+
+  boardCreate:
+    handler: boardCreate.main
+    events:
+      - http:
+          path: board
+          method: post
+          cors: true
+          authorizer: aws_iam
+  
+  boardGet:
+    handler: boardGet.main
+    events:
+      - http:
+          path: board/{content_id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+
+  boardList:
+    handler: boardList.main
+    events:
+      - http:
+          path: board
+          method: get
+          cors: true
+          authorizer: aws_iam
+      
+  boardUpdate:
+    handler: boardUpdate.main
+    events:
+      - http:
+          path: board/{content_id}
+          method: put
+          cors: true
+          authorizer: aws_iam
+
+  boardDelete:
+    handler: boardDelete.main
+    events:
+      - http:
+          path: board/{content_id}
+          method: delete
+          cors: true
+          authorizer: aws_iam
+
+  replyCreate:
+    handler: replyCreate.main
+    events:
+      - http:
+          path: reply
+          method: post
+          cors: true
+          authorizer: aws_iam
+  
+  replyGet:
+    handler: replyGet.main
+    events:
+      - http:
+          path: reply/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+
+  replyList:
+    handler: replyList.main
+    events:
+      - http:
+          path: reply
+          method: get
+          cors: true
+          authorizer: aws_iam
+      
+  replyUpdate:
+    handler: replyUpdate.main
+    events:
+      - http:
+          path: reply/{id}
+          method: put
+          cors: true
+          authorizer: aws_iam
+
+  replyDelete:
+    handler: replyDelete.main
+    events:
+      - http:
+          path: reply/{id}
+          method: delete
           cors: true
           authorizer: aws_iam
 

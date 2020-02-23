@@ -4,17 +4,17 @@ import { success, failure } from "./libs/response-lib";
 
 export async function main(event, context, callback){
   const data = JSON.parse(event.body);
-  console.log(data,"데이터들은?");
   const params = {
-    TableName: "mlog-notes",
+    TableName: "mlog-board2",
     Item: {
       userId: event.requestContext.identity.cognitoIdentityId,
       noteId: uuid.v1(),
-      content: data.content,
-      createAt: Date.now(),
-      atatachment: data.atatachment,
+      context: data.context,
+      username: data.username,
       title: data.title,
-      updateAt: null
+      updated_at: null,
+      //atatachment: data.atatachment,
+      created_at: Date.now()
     }
   };
 

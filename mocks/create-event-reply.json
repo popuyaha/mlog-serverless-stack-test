@@ -1,0 +1,8 @@
+{
+  "body": "{\"context\":\"댓글 달리나요?하나더요\",\"noteId\":\"873ba670-562a-11ea-8304-f5b106f33977\",\"user_id\":\"cd0bca2e-ab62-4c8f-8880-d73289902832\"}",
+  "requestContext": {
+    "identity": {
+      "cognitoIdentityId": "USER-SUB-1234"
+    }
+  }
+}

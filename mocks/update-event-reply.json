@@ -1,0 +1,11 @@
+{
+    "body": "{\"context\":\"끄아아아\"}",
+    "pathParameters": {
+      "id": "4f7d2410-565d-11ea-b880-05126605a345"
+    },
+    "requestContext": {
+      "identity": {
+        "cognitoIdentityId": "cd0bca2e-ab62-4c8f-8880-d73289902832"
+      }
+    }
+  }

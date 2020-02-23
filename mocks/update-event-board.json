@@ -1,0 +1,11 @@
+{
+    "body": "{\"context\":\"끄아아아\",\"title\":\"바껴라\"}",
+    "pathParameters": {
+      "id": "873ba670-562a-11ea-8304-f5b106f33977"
+    },
+    "requestContext": {
+      "identity": {
+        "cognitoIdentityId": "cd0bca2e-ab62-4c8f-8880-d73289902832"
+      }
+    }
+  }

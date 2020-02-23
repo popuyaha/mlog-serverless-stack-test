@@ -4,18 +4,15 @@ import { success, failure } from "./libs/response-lib";
 export async function main(event, context){
     const data = JSON.parse(event.body);
     const params = {
-        TableName: "mlog-notes",
+        TableName: "mlog-board2",
         Key: {
-            userId: event.requestContext.identity.cognitoIdentityId,
-            noteId: event.pathParameters.id
+            noteId: event.pathParameters.content_id
         },
-        UpdateExpression: "SET content = :content, attachment = :attachment, title = :title, updateAt = :updateAt",
+        UpdateExpression: "SET context = :context, update_at = :update_at, title = :title",
         ExpressionAttributeValues: {
-            ":attachment": data.attachment || null,
-            ":content": data.content || null,
             ":title": data.title || null,
-            ":updateAt":Date.now()
-
+            ":context": data.context || null,
+            ":update_at": Date.now()
         },
         ReturnValues: "ALL_NEW"
     };
