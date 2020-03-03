@@ -13,7 +13,8 @@ export async function main(event, context, callback){
       context: data.context,
       username: data.username,
       updated_at: null,
-      created_at: Date.now()
+      created_at: Date.now(),
+      name:data.name
     }
   };
 

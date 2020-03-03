@@ -14,7 +14,8 @@ export async function main(event, context, callback){
       title: data.title,
       updated_at: null,
       //atatachment: data.atatachment,
-      created_at: Date.now()
+      created_at: Date.now(),
+      name: data.name
     }
   };
 

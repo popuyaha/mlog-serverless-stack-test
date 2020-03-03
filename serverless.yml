@@ -198,5 +198,50 @@ functions:
           cors: true
           authorizer: aws_iam
 
+  # rereplyCreate:
+  #   handler: rereplyCreate.main
+  #   events:
+  #     - http:
+  #         path: rereply
+  #         method: post
+  #         cors: true
+  #         authorizer: aws_iam
+  
+  # rereplyGet:
+  #   handler: rereplyGet.main
+  #   events:
+  #     - http:
+  #         path: rereply/{id}
+  #         method: get
+  #         cors: true
+  #         authorizer: aws_iam
+  
+  # rereplyList:
+  #   handler: rereplyList.main
+  #   events:
+  #     - http:
+  #         path: rereply
+  #         method: get
+  #         cors: true
+  #         authorizer: aws_iam
+      
+  # rereplyUpdate:
+  #   handler: rereplyUpdate.main
+  #   events:
+  #     - http:
+  #         path: rereply/{id}
+  #         method: put
+  #         cors: true
+  #         authorizer: aws_iam
+
+  # rereplyDelete:
+  #   handler: rereplyDelete.main
+  #   events:
+  #     - http:
+  #         path: rereply/{id}
+  #         method: delete
+  #         cors: true
+  #         authorizer: aws_iam
+
 resources:
   - ${file(resources/api-gateway-errors.yml)}

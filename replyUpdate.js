@@ -8,10 +8,10 @@ export async function main(event, context){
         Key: {
             commentId: event.pathParameters.id
         },
-        UpdateExpression: "SET context = :context, update_at = :update_at",
+        UpdateExpression: "SET context = :context, updated_at = :updated_at",
         ExpressionAttributeValues: {
             ":context": data.context || null,
-            ":update_at": Date.now()
+            ":updated_at": Date.now()
         },
         ReturnValues: "ALL_NEW"
     };

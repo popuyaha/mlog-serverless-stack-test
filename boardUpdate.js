@@ -8,11 +8,11 @@ export async function main(event, context){
         Key: {
             noteId: event.pathParameters.content_id
         },
-        UpdateExpression: "SET context = :context, update_at = :update_at, title = :title",
+        UpdateExpression: "SET context = :context, updated_at = :updated_at, title = :title",
         ExpressionAttributeValues: {
             ":title": data.title || null,
             ":context": data.context || null,
-            ":update_at": Date.now()
+            ":updated_at": Date.now()
         },
         ReturnValues: "ALL_NEW"
     };
