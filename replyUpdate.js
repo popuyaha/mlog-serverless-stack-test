@@ -10,7 +10,7 @@ export async function main(event, context){
         },
         UpdateExpression: "SET context = :context, updated_at = :updated_at",
         ExpressionAttributeValues: {
-            ":context": data.context || null,
+            ":context": data.context,
             ":updated_at": Date.now()
         },
         ReturnValues: "ALL_NEW"
